@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BF93CA95-8721-4183-B085-D5E68B0606E9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>DAFManager</RootNamespace>
+    <AssemblyName>DAFManager</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>main.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.110.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.110.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.110.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.110.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.110.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.110.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Auth.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Auth.Designer.cs">
+      <DependentUpon>Auth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\admin\Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\admin\Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\admin\sub_comp\EditPass.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\admin\sub_comp\EditPass.Designer.cs">
+      <DependentUpon>EditPass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\admin\sub_comp\EditLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\admin\sub_comp\EditLogin.Designer.cs">
+      <DependentUpon>EditLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\debts\AddDebt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\debts\AddDebt.Designer.cs">
+      <DependentUpon>AddDebt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\debts\EditDebt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\debts\EditDebt.Designer.cs">
+      <DependentUpon>EditDebt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\debts\InfoDebt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\debts\InfoDebt.Designer.cs">
+      <DependentUpon>InfoDebt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\debts\ResDebt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\debts\ResDebt.Designer.cs">
+      <DependentUpon>ResDebt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\DevConsole.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\DevConsole.Designer.cs">
+      <DependentUpon>DevConsole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\help.Designer.cs">
+      <DependentUpon>help.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\priority\Priorities_Add.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\priority\Priorities_Add.Designer.cs">
+      <DependentUpon>Priorities_Add.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\priority\Priorities_Manager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\priority\Priorities_Manager.Designer.cs">
+      <DependentUpon>Priorities_Manager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\users\UserAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\users\UserAdd.Designer.cs">
+      <DependentUpon>UserAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="components\users\UsersEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="components\users\UsersEditor.Designer.cs">
+      <DependentUpon>UsersEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="func\Main_Func.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="func\Tools.cs" />
+    <Compile Include="func\UpdateManager.cs" />
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Startup.Designer.cs">
+      <DependentUpon>Startup.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Auth.resx">
+      <DependentUpon>Auth.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\admin\Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\admin\sub_comp\EditPass.resx">
+      <DependentUpon>EditPass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\admin\sub_comp\EditLogin.resx">
+      <DependentUpon>EditLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\debts\AddDebt.resx">
+      <DependentUpon>AddDebt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\debts\EditDebt.resx">
+      <DependentUpon>EditDebt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\debts\InfoDebt.resx">
+      <DependentUpon>InfoDebt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\debts\ResDebt.resx">
+      <DependentUpon>ResDebt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\DevConsole.resx">
+      <DependentUpon>DevConsole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\help.resx">
+      <DependentUpon>help.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\priority\Priorities_Add.resx">
+      <DependentUpon>Priorities_Add.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\priority\Priorities_Manager.resx">
+      <DependentUpon>Priorities_Manager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\users\UserAdd.resx">
+      <DependentUpon>UserAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="components\users\UsersEditor.resx">
+      <DependentUpon>UsersEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Startup.resx">
+      <DependentUpon>Startup.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\dbm_lib\dbm_lib.csproj">
+      <Project>{d1eac27c-d410-4254-9940-fdfd31323e7e}</Project>
+      <Name>dbm_lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ex_lib\ex_lib.csproj">
+      <Project>{e5a9cc59-7cfa-4511-81ae-498ebb8b7261}</Project>
+      <Name>ex_lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lm_lib\lm_lib.csproj">
+      <Project>{b59d984c-0708-472d-91bd-339705020304}</Project>
+      <Name>lm_lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\sm_lib\sm_lib.csproj">
+      <Project>{19b142f7-4dd3-4560-b70c-fefbe919943d}</Project>
+      <Name>sm_lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Updater\Updater.csproj">
+      <Project>{c3acf38c-24c8-48f7-8637-0439f9db25c9}</Project>
+      <Name>Updater</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="main.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets'))" />
+  </Target>
+</Project>
