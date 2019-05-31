@@ -34,17 +34,25 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.save = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.autoupdateCheck = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.autoupdateInterval = new System.Windows.Forms.NumericUpDown();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.sp_ob = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.sync_path = new System.Windows.Forms.TextBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.autoupdateInterval = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.autoupdateCheck = new System.Windows.Forms.CheckBox();
+            this.save = new System.Windows.Forms.Button();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.label4 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.autoupdateInterval)).BeginInit();
             this.SuspendLayout();
             // 
@@ -102,17 +110,6 @@
             this.tabPage2.Text = "Окно";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // save
-            // 
-            this.save.Enabled = false;
-            this.save.Location = new System.Drawing.Point(633, 323);
-            this.save.Name = "save";
-            this.save.Size = new System.Drawing.Size(103, 23);
-            this.save.TabIndex = 3;
-            this.save.Text = "Сохранить";
-            this.save.UseVisualStyleBackColor = true;
-            this.save.Click += new System.EventHandler(this.Save_Click);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -126,6 +123,9 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.label4);
+            this.tabPage3.Controls.Add(this.panel1);
+            this.tabPage3.Controls.Add(this.checkBox2);
             this.tabPage3.Controls.Add(this.label2);
             this.tabPage3.Controls.Add(this.autoupdateInterval);
             this.tabPage3.Controls.Add(this.label1);
@@ -137,27 +137,63 @@
             this.tabPage3.Text = "Система";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // autoupdateCheck
+            // panel1
             // 
-            this.autoupdateCheck.AutoSize = true;
-            this.autoupdateCheck.Checked = true;
-            this.autoupdateCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.autoupdateCheck.Location = new System.Drawing.Point(22, 20);
-            this.autoupdateCheck.Name = "autoupdateCheck";
-            this.autoupdateCheck.Size = new System.Drawing.Size(201, 18);
-            this.autoupdateCheck.TabIndex = 1;
-            this.autoupdateCheck.Text = "Включить автообновление";
-            this.autoupdateCheck.UseVisualStyleBackColor = true;
-            this.autoupdateCheck.CheckedChanged += new System.EventHandler(this.AutoupdateCheck_CheckedChanged);
+            this.panel1.Controls.Add(this.sp_ob);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.sync_path);
+            this.panel1.Enabled = false;
+            this.panel1.Location = new System.Drawing.Point(8, 140);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(565, 34);
+            this.panel1.TabIndex = 6;
             // 
-            // label1
+            // sp_ob
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 54);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(222, 14);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Интервал проверки обновлений:";
+            this.sp_ob.Location = new System.Drawing.Point(479, 5);
+            this.sp_ob.Name = "sp_ob";
+            this.sp_ob.Size = new System.Drawing.Size(75, 23);
+            this.sp_ob.TabIndex = 11;
+            this.sp_ob.Text = "Обзор";
+            this.sp_ob.UseVisualStyleBackColor = true;
+            this.sp_ob.Click += new System.EventHandler(this.Sp_ob_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 14);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Общая папка:";
+            // 
+            // sync_path
+            // 
+            this.sync_path.Location = new System.Drawing.Point(117, 6);
+            this.sync_path.Name = "sync_path";
+            this.sync_path.Size = new System.Drawing.Size(356, 22);
+            this.sync_path.TabIndex = 9;
+            this.sync_path.TextChanged += new System.EventHandler(this.Sync_path_TextChanged);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(22, 116);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(196, 18);
+            this.checkBox2.TabIndex = 5;
+            this.checkBox2.Text = "Включить синхронизацию";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(291, 54);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(15, 14);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "ч";
             // 
             // autoupdateInterval
             // 
@@ -182,14 +218,49 @@
             0});
             this.autoupdateInterval.ValueChanged += new System.EventHandler(this.AutoupdateInterval_ValueChanged);
             // 
-            // label2
+            // label1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(291, 54);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(15, 14);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "ч";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(19, 54);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(222, 14);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Интервал проверки обновлений:";
+            // 
+            // autoupdateCheck
+            // 
+            this.autoupdateCheck.AutoSize = true;
+            this.autoupdateCheck.Checked = true;
+            this.autoupdateCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.autoupdateCheck.Location = new System.Drawing.Point(22, 20);
+            this.autoupdateCheck.Name = "autoupdateCheck";
+            this.autoupdateCheck.Size = new System.Drawing.Size(201, 18);
+            this.autoupdateCheck.TabIndex = 1;
+            this.autoupdateCheck.Text = "Включить автообновление";
+            this.autoupdateCheck.UseVisualStyleBackColor = true;
+            this.autoupdateCheck.CheckedChanged += new System.EventHandler(this.AutoupdateCheck_CheckedChanged);
+            // 
+            // save
+            // 
+            this.save.Enabled = false;
+            this.save.Location = new System.Drawing.Point(633, 323);
+            this.save.Name = "save";
+            this.save.Size = new System.Drawing.Size(103, 23);
+            this.save.TabIndex = 3;
+            this.save.Text = "Сохранить";
+            this.save.UseVisualStyleBackColor = true;
+            this.save.Click += new System.EventHandler(this.Save_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label4.ForeColor = System.Drawing.Color.Gray;
+            this.label4.Location = new System.Drawing.Point(8, 270);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(419, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "*При изменении этих параметров потребуется перезапуск программы";
             // 
             // Settings
             // 
@@ -206,12 +277,15 @@
             this.MaximizeBox = false;
             this.Name = "Settings";
             this.Text = "Настройки";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Settings_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.autoupdateInterval)).EndInit();
             this.ResumeLayout(false);
 
@@ -231,5 +305,12 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown autoupdateInterval;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button sp_ob;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox sync_path;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.Label label4;
     }
 }

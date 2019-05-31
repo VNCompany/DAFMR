@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DAFManager.components.admin.sub_comp;
 using sm_lib;
 using dbm_lib;
+using System.IO;
 
 namespace DAFManager
 {
@@ -55,6 +56,18 @@ namespace DAFManager
                 else
                     autoupdateInterval.Value = Convert.ToDecimal(Set.Items["auto_update_interval"].Value);
             }
+
+            if(Set.Items["sync_enabled"] != null)
+            {
+                checkBox2.Checked = Convert.ToBoolean(Set.Items["sync_enabled"].Value);
+                panel1.Enabled = checkBox2.Checked;
+                if (Set.Items["sync_path"] != null)
+                {
+                    sync_path.Text = Set.Items["sync_path"].Value;
+                    if(Directory.Exists(sync_path.Text))
+                        folderBrowserDialog1.SelectedPath = sync_path.Text;
+                }
+            }
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -65,6 +78,7 @@ namespace DAFManager
                 {
                     dbm.UpdateLogin(login);
                     MessageBox.Show("Логин успешно изменён!");
+                    sync_manager.Synchronization.changes += 1;
                 }
             }
         }
@@ -78,6 +92,7 @@ namespace DAFManager
                     if(dbm.UpdatePass(old_p, new_p))
                     {
                         MessageBox.Show("Пароль успешно изменён!");
+                        sync_manager.Synchronization.changes += 1;
                     }
                     else
                     {
@@ -109,6 +124,15 @@ namespace DAFManager
 
         private void Save_Click(object sender, EventArgs e)
         {
+            if (checkBox2.Checked)
+            {
+                if(Set.Items["sync_path"] == null || !Directory.Exists(Set.Items["sync_path"].Value))
+                {
+                    MessageBox.Show("При включенной синхронизации путь до общей папки обязательно должен быть введён!");
+                    return;
+                }
+            }
+
             if (cfg_ch) Set.Save();
             Close();
         }
@@ -137,6 +161,55 @@ namespace DAFManager
         {
             Set.Items["auto_update_interval"].Value = autoupdateInterval.Value.ToString();
             ch();
+        }
+
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if(Set.Items["sync_enabled"] != null)
+            {
+                Set.Items["sync_enabled"].Value = checkBox2.Checked.ToString();
+            }
+            else
+            {
+                Set.Items.Add("sync_enabled", checkBox2.Checked);
+            }
+
+            panel1.Enabled = checkBox2.Checked;
+            ch();
+        }
+
+        private void Sp_ob_Click(object sender, EventArgs e)
+        {
+            if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                sync_path.Text = folderBrowserDialog1.SelectedPath;
+                Sync_path_TextChanged(sender, e);
+                ch();
+            }
+        }
+
+        private void Settings_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                if (Set.Items["sync_path"] == null || !Directory.Exists(Set.Items["sync_path"].Value))
+                {
+                    MessageBox.Show("При включенной синхронизации путь до общей папки обязательно должен быть введён!");
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void Sync_path_TextChanged(object sender, EventArgs e)
+        {
+            if(Set.Items["sync_path"] != null)
+            {
+                Set.Items["sync_path"].Value = sync_path.Text;
+            }
+            else
+            {
+                Set.Items.Add("sync_path", sync_path.Text);
+            }
         }
     }
 }

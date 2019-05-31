@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ex_lib", "ex_lib\ex_lib.csproj", "{E5A9CC59-7CFA-4511-81AE-498EBB8B7261}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sync_manager", "sync_manager\sync_manager.csproj", "{CEB104C5-85E9-414D-BFD8-5AE2C86B7CFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncUploader", "SyncUploader\SyncUploader.csproj", "{4D80AB98-AE06-4AC6-84A1-A0B5F47C0602}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{E5A9CC59-7CFA-4511-81AE-498EBB8B7261}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5A9CC59-7CFA-4511-81AE-498EBB8B7261}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5A9CC59-7CFA-4511-81AE-498EBB8B7261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEB104C5-85E9-414D-BFD8-5AE2C86B7CFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEB104C5-85E9-414D-BFD8-5AE2C86B7CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEB104C5-85E9-414D-BFD8-5AE2C86B7CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEB104C5-85E9-414D-BFD8-5AE2C86B7CFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D80AB98-AE06-4AC6-84A1-A0B5F47C0602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D80AB98-AE06-4AC6-84A1-A0B5F47C0602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D80AB98-AE06-4AC6-84A1-A0B5F47C0602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D80AB98-AE06-4AC6-84A1-A0B5F47C0602}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

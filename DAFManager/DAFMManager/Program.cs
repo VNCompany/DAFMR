@@ -22,6 +22,9 @@ namespace DAFManager
         [STAThread]
         static void Main(string[] args)
         {
+
+            if (Process.GetProcessesByName("DAFManager").Length > 1) return;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             if (args.Length == 0 || !args.Contains("/s"))
@@ -61,7 +64,7 @@ namespace DAFManager
 
     public static class Constants
     {
-        public static readonly string PROG_VERSION = "102";
+        public static readonly string PROG_VERSION = "103";
         public static readonly int UPDATE_CHECK_INTERVAL = 1000 * 60 * 60 * 2;
 
         public static string SETTINGS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VNCompany", "DAFM");

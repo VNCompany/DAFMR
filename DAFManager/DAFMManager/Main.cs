@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 using lm_lib;
 
@@ -56,6 +57,7 @@ namespace DAFManager
                     UpdateDebts();
                     UpdateCounters();
                     PrintAllDebts();
+                    sync_manager.Synchronization.changes += 1;
                 }
             }
         }
@@ -75,6 +77,7 @@ namespace DAFManager
                 UpdateDebts();
                 PrintAllDebts();
                 UpdateCounters();
+                sync_manager.Synchronization.changes += 1;
             }
         }
 
@@ -105,6 +108,8 @@ namespace DAFManager
         private void Main_FormClosed(object sender, FormClosedEventArgs e)
         {
             Program.Settings.Save();
+            if(synced)
+                synchronization.Stop(true);
             updateTh.Abort();
             AUTH.Close();
         }
@@ -118,7 +123,7 @@ namespace DAFManager
         {
             Priorities_Manager pm = new Priorities_Manager(Priorities.ToArray(), dbm);
             pm.ShowDialog();
-            if (pm.UpdatePriorities) { UpdatePriorities(); UpdateDebts(); PrintAllDebts(); }
+            if (pm.UpdatePriorities) { UpdatePriorities(); UpdateDebts(); PrintAllDebts(); sync_manager.Synchronization.changes += 1; }
             pm.Dispose();
             pm = null;
             GC.Collect();
@@ -191,7 +196,7 @@ namespace DAFManager
             {
                 using (EditDebt ed = new EditDebt(Debts.First(t => t.ID.ToString() == view.SelectedItems[0].SubItems[0].Text), dbm, Priorities.ToArray()))
                 {
-                    if (ed.ShowForm(out dbm_lib.UpdateConstructor uc)) { dbm.EditDebt(uc); UpdateDebts(); PrintAllDebts(); }
+                    if (ed.ShowForm(out dbm_lib.UpdateConstructor uc)) { dbm.EditDebt(uc); UpdateDebts(); PrintAllDebts(); sync_manager.Synchronization.changes += 1; }
                 }
             }
         }
@@ -248,6 +253,7 @@ namespace DAFManager
                             UpdateDebts();
                             UpdateCounters();
                             PrintAllDebts();
+                            sync_manager.Synchronization.changes += 1;
                         }
                     }
                 }
@@ -296,6 +302,18 @@ namespace DAFManager
         {
             try
             {
+                System.IO.FileInfo fi = new System.IO.FileInfo(System.IO.Path.Combine(Constants.PROG_DIR, "base.db"));
+                if (fi.Exists)
+                {
+                    System.IO.FileInfo fc = new System.IO.FileInfo(System.IO.Path.Combine(Constants.PROG_DIR, $"base_{DateTime.Now.ToShortDateString()}.db"));
+                    if (fc.Exists)
+                        fc.Delete();
+                    fi.CopyTo(fc.FullName);
+                    notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
+                    notifyIcon1.BalloonTipTitle = "DAFM Recovery";
+                    notifyIcon1.BalloonTipText = $"Точка восстановления \"{fc.Name}\" успешно создана.";
+                    notifyIcon1.ShowBalloonTip(3000);
+                }
                 using (OpenFileDialog ofd = new OpenFileDialog())
                 {
                     ofd.Filter = "XLSX Files|*.xlsx";
@@ -304,31 +322,109 @@ namespace DAFManager
                     {
                         string[][] vals = ex_lib.ExcelWorker.Parse(ofd.FileName);
                         List<dbm_lib.InsertConstructor> insert = new List<dbm_lib.InsertConstructor>();
+                        List<string> errors = new List<string>();
                         for(int i = 0; i < vals.Length; i++)
                         {
-                            dbm_lib.InsertConstructor ins = new dbm_lib.InsertConstructor();
-                            ins.TableName = "Debts";
-                            ins.Values.Add(new dbm_lib.DBKV("name", vals[i][0]));
-                            if (!dbm.UserExists(vals[i][0])) dbm.AddUser(new dbm_lib.components.User(0, vals[i][0], Priorities[0], ""));
-                            ins.Values.Add(new dbm_lib.DBKV("debt", vals[i][1]));
-                            ins.Values.Add(new dbm_lib.DBKV("priority", vals[i][2]));
-                            string date = vals[i][3] == "-" ? DateTime.Now.ToString() : vals[i][3];
-                            ins.Values.Add(new dbm_lib.DBKV("date", date));
-                            ins.Values.Add(new dbm_lib.DBKV("desc", vals[i][4]));
-                            insert.Add(ins);
+                            try
+                            {
+                                dbm_lib.InsertConstructor ins = new dbm_lib.InsertConstructor();
+                                ins.TableName = "Debts";
+                                if (string.IsNullOrWhiteSpace(vals[i][0])) continue;
+                                ins.Values.Add(new dbm_lib.DBKV("name", vals[i][0]));
+                                if (!dbm.UserExists(vals[i][0])) dbm.AddUser(new dbm_lib.components.User(0, vals[i][0], Priorities[0], ""));
+                                ins.Values.Add(new dbm_lib.DBKV("debt", string.IsNullOrWhiteSpace(vals[i][1]) ? "100" : vals[i][1]));
+                                ins.Values.Add(new dbm_lib.DBKV("priority", string.IsNullOrWhiteSpace(vals[i][2]) ? "0" : vals[i][2]));
+                                string date; // vals[i][3]
+                                try
+                                {
+                                    Regex rx_date = new Regex(@"([0-9]{1,2}?)\.([0-9]{1,2}?)\.([0-9]{4}?)");
+                                    Regex rx_time = new Regex(@"([0-9]{1,2}?):([0-9]{1,2})");
+
+                                    Match m1 = rx_date.Match(vals[i][3]);
+                                    if (m1.Success)
+                                    {
+                                        int d = Convert.ToInt32(m1.Groups[1].Value);
+                                        int m = Convert.ToInt32(m1.Groups[2].Value);
+                                        int y = Convert.ToInt32(m1.Groups[3].Value);
+
+                                        DateTime dt;
+
+                                        Match m2 = rx_time.Match(vals[i][3]);
+                                        if (m2.Success)
+                                        {
+                                            int h = Convert.ToInt32(m2.Groups[1].Value);
+                                            int min = Convert.ToInt32(m2.Groups[2].Value);
+                                            try
+                                            {
+                                                dt = new DateTime(y, m, d, h, min, 0);
+                                            }
+                                            catch (ArgumentOutOfRangeException ex)
+                                            {
+                                                errors.Add("358: " + ex.Message + ". Date: " + vals[i][3]);
+                                                dt = DateTime.Now;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                dt = new DateTime(y, m, d, 0, 0, 0);
+                                            }
+                                            catch (ArgumentOutOfRangeException ex)
+                                            {
+                                                errors.Add("370: " + ex.Message + ". Date: " + vals[i][3]);
+                                                dt = DateTime.Now;
+                                            }
+                                        }
+                                        date = dt.ToString();
+                                    }
+                                    else
+                                    {
+                                        date = DateTime.Now.ToString();
+                                        errors.Add("Main.cs_351: Из-за ошибки парсинга даты для долга установлена текущая дата. Входная строка: " + vals[i][3] + ".");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    date = DateTime.Now.ToString();
+                                    errors.Add(string.Format("{0}: \"{1}\"", ex.GetType().FullName, ex.Message));
+                                }
+                                ins.Values.Add(new dbm_lib.DBKV("date", date));
+                                ins.Values.Add(new dbm_lib.DBKV("desc", vals[i][4]));
+                                insert.Add(ins);
+                            }
+                            catch (Exception ex)
+                            {
+                                errors.Add(string.Format("{0}: \"{1}\"", ex.GetType().FullName, ex.Message));
+                            }
                         }
+                        Program.Log.WriteList(from t in errors select new Log.WriteLineElement(t, Log.LogType.ERR));
+                        MessageBox.Show(string.Format($"Операция импорта завершена. \nКоличество ошибок: {errors.Count}."));
                         string val = string.Join(";", insert.Select(t => t.ToString()));
                         dbm.SQLITECMD_NONE(val);
                         UpdateDebts();
                         UpdateCounters();
                         PrintAllDebts();
+                        sync_manager.Synchronization.changes += 1;
                     }
                 }
             }
             catch(Exception)
             {
-                MessageBox.Show("Не удалось экспортировать данные.");
+                MessageBox.Show("Не удалось импортировать данные.");
+                Close();
+                Application.Exit();
             }
+            finally
+            {
+                MessageBox.Show("На случай неудачного экспорта резервная копия сохраняется в папку с программой. При необходимости можно восстановить данные.");
+            }
+        }
+
+        private void ImportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            synchronization.Pause();
+            synchronization.GetFile();
         }
     }
 }

@@ -12,6 +12,7 @@ using dbm_lib;
 using dbm_lib.components;
 using sm_lib;
 using lm_lib;
+using sync_manager;
 
 namespace DAFManager
 {
@@ -22,6 +23,8 @@ namespace DAFManager
         List<Debt> Debts = new List<Debt>();
         public UpdateManager updater;
         public Thread updateTh;
+        public Synchronization synchronization;
+        bool synced = false;
 
         public void InitializeVariables()
         {
@@ -40,6 +43,16 @@ namespace DAFManager
             Program.Settings.Open();
             dbm.CheckTables();
             UpdateAll();
+
+            if(Program.Settings.Items["sync_enabled"] != null &&
+               Program.Settings.Items["sync_enabled"].Value == "True" &&
+               Program.Settings.Items["sync_path"] != null &&
+               Directory.Exists(Program.Settings.Items["sync_path"].Value))
+            {
+                synchronization = new Synchronization(Path.Combine(Constants.PROG_DIR, "base.db"), Path.Combine(Program.Settings.Items["sync_path"].Value, "base.db"));
+                synced = true;
+                synchronization.Start();
+            }
         }
 
         public void UpdateAll()
@@ -115,7 +128,7 @@ namespace DAFManager
         public static void GetExceptionMessage(Exception ex, string dop = "")
         {
             Program.Log.WriteLineF("{0} - {1}:" + dop, Log.LogType.ERR, ex.GetType().FullName, ex.Message);
-            MessageBox.Show("Произошла непредвиденная ошибка.\n Программа активно разрабатывается и в некоторых случаях требует доработки. Информация об ошибке сохранена в файл log.txt - отправьте его администратору. Извините за неудобства.", "Fatal error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(string.Format("Fatal error. \n{0}: \"{1}\". \nError saved in the log.", ex.GetType().FullName, ex.Message), "Fatal error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void TH_Update(object um)
@@ -134,7 +147,7 @@ namespace DAFManager
             }
             catch (Exception ex)
             {
-                if (!(ex is ThreadAbortException))
+                if (!(ex is ThreadAbortException) && !(ex is System.Net.WebException))
                 {
                     Invoke((MethodInvoker)(() =>
                     {
@@ -188,7 +201,14 @@ namespace DAFManager
             }
             catch (Exception ex)
             {
-                GetExceptionMessage(ex, "Main_Func.cs:118");
+                if(ex is System.Net.WebException)
+                {
+                    MessageBox.Show("Подключение к интернету отсутствует.");
+                }
+                else
+                {
+                    GetExceptionMessage(ex, "Main_Func.cs:118");
+                }
             }
         }
 

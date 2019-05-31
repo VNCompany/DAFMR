@@ -259,6 +259,14 @@
       <Project>{19b142f7-4dd3-4560-b70c-fefbe919943d}</Project>
       <Name>sm_lib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SyncUploader\SyncUploader.csproj">
+      <Project>{4d80ab98-ae06-4ac6-84a1-a0b5f47c0602}</Project>
+      <Name>SyncUploader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\sync_manager\sync_manager.csproj">
+      <Project>{ceb104c5-85e9-414d-bfd8-5ae2c86b7cfc}</Project>
+      <Name>sync_manager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Updater\Updater.csproj">
       <Project>{c3acf38c-24c8-48f7-8637-0439f9db25c9}</Project>
       <Name>Updater</Name>

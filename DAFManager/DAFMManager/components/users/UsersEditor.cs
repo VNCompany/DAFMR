@@ -47,6 +47,7 @@ namespace DAFManager.components.users
             {
                 dbm.AddUser(new User(0, ua.UserName, ua.SelectedPriority, ""));
                 PrintAllUsers();
+                sync_manager.Synchronization.changes += 1;
             }
         }
 
@@ -69,6 +70,7 @@ namespace DAFManager.components.users
                     main.UpdateCounters();
                     main.PrintAllDebts();
                     PrintAllUsers();
+                    sync_manager.Synchronization.changes += 1;
                 }
             }
             else
@@ -104,6 +106,7 @@ namespace DAFManager.components.users
                         uc.Values.Add(new DBKV("priority", ua.SelectedPriority.Name.ToString()));
                         dbm.EditUser(uc);
                         PrintAllUsers();
+                        sync_manager.Synchronization.changes += 1;
                     }
                 }
             }
