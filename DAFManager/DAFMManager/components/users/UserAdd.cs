@@ -38,7 +38,9 @@ namespace DAFManager
         public UserAdd(DataBaseManager baseManager, string[] names)
         {
             InitializeComponent();
+
             dbm = baseManager;
+            if (!dbm.isBusy) { Close(); return; }
             users = names;
             pri = dbm.GetPriorities();
 
@@ -52,6 +54,8 @@ namespace DAFManager
 
         public void Construct()
         {
+            if (!dbm.isBusy) { Close(); return; }
+
             if (EType == EditType.Create)
                 priorityname.SelectedIndex = 0;
             else
@@ -78,6 +82,8 @@ namespace DAFManager
 
         private void Button1_Click(object sender, EventArgs e)
         {
+            if (!dbm.isBusy) { Close(); return; }
+
             if (string.IsNullOrWhiteSpace(username.Text)) { MessageBox.Show("Введите имя!"); return; }
             if (users.Contains(username.Text) && EType == EditType.Create) { MessageBox.Show("Такой человек уже существует в базе."); return; }
             if (priorityname.SelectedItem == null) { MessageBox.Show("Выберите приоритет!"); return; }

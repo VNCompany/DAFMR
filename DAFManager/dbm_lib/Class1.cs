@@ -12,12 +12,22 @@ namespace dbm_lib
     public class DataBaseManager
     {
         SQLiteConnection lite;
-
+        public bool isBusy = false;
 
         public DataBaseManager()
         {
             lite = new SQLiteConnection("Data Source=base.db;Version=3");
             lite.Open();
+            isBusy = true;
+        }
+
+        public void Open()
+        {
+            if (!isBusy)
+            {
+                lite.Open();
+                isBusy = true;
+            }
         }
 
         public void CheckTables()
@@ -119,6 +129,11 @@ namespace dbm_lib
                     return false;
                 }
             }
+        }
+
+        public string GetLogin()
+        {
+            return SQLITECMD_OBJ("SELECT `value` FROM `Settings` WHERE `key`='login'").ToString();
         }
 
         public int GetSumAmounts(string condition="")
@@ -336,6 +351,7 @@ namespace dbm_lib
         public void Close()
         {
             lite.Close();
+            isBusy = false;
         }
         
         public static string MD5_Hash(string input)

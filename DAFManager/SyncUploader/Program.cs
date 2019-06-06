@@ -40,7 +40,7 @@ namespace SyncUploader
             }
             Console.WriteLine("Starting DAFManager...");
             Thread.Sleep(2000);
-            Process.Start("DAFManager.exe");
+            Process.Start("DAFManager.exe",  "dafm_admin /show /non-auth");
         }
     }
 }

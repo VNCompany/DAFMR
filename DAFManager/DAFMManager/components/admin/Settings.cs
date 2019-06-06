@@ -68,6 +68,25 @@ namespace DAFManager
                         folderBrowserDialog1.SelectedPath = sync_path.Text;
                 }
             }
+
+            if (Set.Items["auth_type"] != null)
+            {
+                switch (Set.Items["auth_type"].Value)
+                {
+                    case "0":
+                        auth_standart.Checked = true;
+                        break;
+                    case "1":
+                        auth_pass_only.Checked = true;
+                        break;
+                    case "2":
+                        auth_auto.Checked = true;
+                        break;
+                    default:
+                        auth_standart.Checked = true;
+                        break;
+                }
+            }
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -78,7 +97,7 @@ namespace DAFManager
                 {
                     dbm.UpdateLogin(login);
                     MessageBox.Show("Логин успешно изменён!");
-                    sync_manager.Synchronization.changes += 1;
+                    sync_manager.Synchronization.Changes += 1;
                 }
             }
         }
@@ -92,7 +111,7 @@ namespace DAFManager
                     if(dbm.UpdatePass(old_p, new_p))
                     {
                         MessageBox.Show("Пароль успешно изменён!");
-                        sync_manager.Synchronization.changes += 1;
+                        sync_manager.Synchronization.Changes += 1;
                     }
                     else
                     {
@@ -209,6 +228,23 @@ namespace DAFManager
             else
             {
                 Set.Items.Add("sync_path", sync_path.Text);
+            }
+        }
+
+        private void Auth_standart_CheckedChanged(object sender, EventArgs e)
+        {
+            ch();
+            switch ((sender as Control).Name)
+            {
+                case "auth_standart":
+                    Set.Items["auth_type"].Value = "0";
+                    break;
+                case "auth_pass_only":
+                    Set.Items["auth_type"].Value = "1";
+                    break;
+                case "auth_auto":
+                    Set.Items["auth_type"].Value = "2";
+                    break;
             }
         }
     }

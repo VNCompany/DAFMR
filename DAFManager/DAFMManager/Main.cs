@@ -10,13 +10,16 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
 using lm_lib;
+using System.IO;
 
 namespace DAFManager
 {
     public partial class Main : Form
     {
         DAFMManager.Auth AUTH;
-        public Main(DAFMManager.Auth auth)
+        int sort_type = -1;
+        Panel thinking;
+        public Main(DAFMManager.Auth auth=null)
         {
             InitializeComponent();
 
@@ -25,14 +28,37 @@ namespace DAFManager
             try
             {
                 InitializeVariables();
-
-                PrintAllDebts();
                 UpdateCounters();
             } catch (Exception ex)
             {
                 GetExceptionMessage(ex, "Main.cs:24");
                 Close();
             }
+
+            thinking = new Panel();
+            thinking.Dock = DockStyle.Fill;
+            thinking.BackColor = Color.White;
+            Label label = new Label();
+            label.Text = "Синхронизация...";
+            label.Dock = DockStyle.Fill;
+            label.TextAlign = ContentAlignment.MiddleCenter;
+            label.Font = new Font("Verdana", 36, FontStyle.Bold);
+            thinking.Visible = false;
+            thinking.Controls.Add(label);
+            Controls.Add(thinking);
+        }
+
+        public void ShowThink()
+        {
+            menuStrip1.Hide();
+            thinking.BringToFront();
+            thinking.Show();
+        }
+
+        public void HideThink()
+        {
+            menuStrip1.Show();
+            thinking.Hide();
         }
 
         private void ContextMenuStrip1_Opening(object sender, CancelEventArgs e)
@@ -57,7 +83,7 @@ namespace DAFManager
                     UpdateDebts();
                     UpdateCounters();
                     PrintAllDebts();
-                    sync_manager.Synchronization.changes += 1;
+                    sync_manager.Synchronization.Changes += 1;
                 }
             }
         }
@@ -77,7 +103,7 @@ namespace DAFManager
                 UpdateDebts();
                 PrintAllDebts();
                 UpdateCounters();
-                sync_manager.Synchronization.changes += 1;
+                sync_manager.Synchronization.Changes += 1;
             }
         }
 
@@ -109,9 +135,13 @@ namespace DAFManager
         {
             Program.Settings.Save();
             if(synced)
-                synchronization.Stop(true);
+                // TODO: остановка синхронизации
             updateTh.Abort();
-            AUTH.Close();
+            if(AUTH != null)
+                AUTH.Close();
+            checkFormState.Stop();
+
+            SaveWinProp();
         }
 
         private void ДобавитьДолгToolStripMenuItem_Click(object sender, EventArgs e)
@@ -123,7 +153,7 @@ namespace DAFManager
         {
             Priorities_Manager pm = new Priorities_Manager(Priorities.ToArray(), dbm);
             pm.ShowDialog();
-            if (pm.UpdatePriorities) { UpdatePriorities(); UpdateDebts(); PrintAllDebts(); sync_manager.Synchronization.changes += 1; }
+            if (pm.UpdatePriorities) { UpdatePriorities(); UpdateDebts(); PrintAllDebts(); sync_manager.Synchronization.Changes += 1; }
             pm.Dispose();
             pm = null;
             GC.Collect();
@@ -150,6 +180,9 @@ namespace DAFManager
 
             List<ListViewItem> lwis = new List<ListViewItem>();
             foreach (ListViewItem lwi in view.Items) lwis.Add(lwi);
+
+            lwis = SSort(lwis, checkBox1.Checked);
+
             view.Items.Clear();
             foreach (ListViewItem lwi in lwis)
             {
@@ -172,11 +205,22 @@ namespace DAFManager
                     }
                 }
             }
+            UpdateCounters(GetElementsCount(), ViewSum(), -1);
         }
 
         public void CloseSearch()
         {
             Button2_Click(this, new EventArgs());
+        }
+
+        public int ViewSum()
+        {
+            int sum = 0;
+            foreach (ListViewItem lwi in view.Items)
+            {
+                sum += Convert.ToInt32(lwi.SubItems[2].Text.Split(' ')[0]);
+            }
+            return sum;
         }
 
         public int GetElementsCount()
@@ -196,7 +240,7 @@ namespace DAFManager
             {
                 using (EditDebt ed = new EditDebt(Debts.First(t => t.ID.ToString() == view.SelectedItems[0].SubItems[0].Text), dbm, Priorities.ToArray()))
                 {
-                    if (ed.ShowForm(out dbm_lib.UpdateConstructor uc)) { dbm.EditDebt(uc); UpdateDebts(); PrintAllDebts(); sync_manager.Synchronization.changes += 1; }
+                    if (ed.ShowForm(out dbm_lib.UpdateConstructor uc)) { dbm.EditDebt(uc); UpdateDebts(); PrintAllDebts(); sync_manager.Synchronization.Changes += 1; }
                 }
             }
         }
@@ -219,8 +263,19 @@ namespace DAFManager
 
         private void ВыходToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Close();
-            Main_FormClosed(sender, new FormClosedEventArgs(CloseReason.UserClosing));
+            if (AUTH != null)
+            {
+                Close();
+                Main_FormClosed(sender, new FormClosedEventArgs(CloseReason.UserClosing));
+            }
+            else
+            {
+                //Program.Settings.Save();
+                //if (synced)
+                //    synchronization.Stop(true);
+                //updateTh.Abort();
+                Close();
+            }
         }
 
         private void УплатаДолгаToolStripMenuItem_Click(object sender, EventArgs e)
@@ -253,7 +308,7 @@ namespace DAFManager
                             UpdateDebts();
                             UpdateCounters();
                             PrintAllDebts();
-                            sync_manager.Synchronization.changes += 1;
+                            sync_manager.Synchronization.Changes += 1;
                         }
                     }
                 }
@@ -405,7 +460,7 @@ namespace DAFManager
                         UpdateDebts();
                         UpdateCounters();
                         PrintAllDebts();
-                        sync_manager.Synchronization.changes += 1;
+                        sync_manager.Synchronization.Changes += 1;
                     }
                 }
             }
@@ -423,8 +478,133 @@ namespace DAFManager
 
         private void ImportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            synchronization.Pause();
-            synchronization.GetFile();
+            if (!SyncEnabled()) MessageBox.Show("Служба синхронизации выключена");
+
+            Icon_Downloading();
+            ShowThink();
+            dbm.Close();
+            synchronization.SyncGetAsync((result) =>
+            {
+                dbm.Open();
+                HideThink();
+
+                if(result == null)
+                {
+                    MessageBox.Show("Служба синхронизации работает неправильно, отключена или не была установлена. Исправить проблему " +
+                        "можно перезапуском программы.");
+                }
+
+                if (result.Contains("успешно"))
+                {
+                    Button2_Click(sender, e);
+                    Icon_Default();
+                }
+                else
+                {
+                    Icon_Default();
+                    MessageBox.Show(result);
+                }
+            });
+        }
+
+        private void CheckFormState_Tick(object sender, EventArgs e)
+        {
+            System.IO.FileInfo fi = new System.IO.FileInfo(Constants.PROG_DIR + "\\" + "showform");
+            if (fi.Exists)
+            {
+                WindowState = FormWindowState.Normal;
+                ShowInTaskbar = true;
+                fi.Delete();
+            }
+        }
+
+        public List<ListViewItem> SSort(List<ListViewItem> lwis, bool reverse = false)
+        {
+            switch (sort_type)
+            {
+                case -1:
+                    return lwis;
+                case 0:
+                    lwis.Sort((a, b) => Convert.ToInt32(a.SubItems[0].Text).CompareTo(Convert.ToInt32(b.SubItems[0].Text)));
+                    break;
+                case 2:
+                    lwis.Sort((a, b) => Convert.ToInt32(a.SubItems[2].Text.Split(' ')[0]).CompareTo(Convert.ToInt32(b.SubItems[2].Text.Split(' ')[0])));
+                    break;
+                case 4:
+                    lwis.Sort((a, b) => DateTime.Parse(a.SubItems[4].Text).CompareTo(DateTime.Parse(b.SubItems[4].Text)));
+                    break;
+            }
+
+            if (reverse) lwis.Reverse();
+
+            return lwis;
+        }
+
+        public void SSort()
+        {
+            if(sort_type != -1)
+            {
+                List<ListViewItem> lwis = new List<ListViewItem>();
+                foreach (ListViewItem lwi in view.Items) lwis.Add(lwi);
+                view.Items.Clear();
+
+                lwis = SSort(lwis, checkBox1.Checked);
+
+                foreach (ListViewItem lwi in lwis) view.Items.Add(lwi);
+            }
+        }
+
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:
+                    sort_type = -1;
+                    break;
+                case 1:
+                    sort_type = 0;
+                    break;
+                case 2:
+                    sort_type = 2;
+                    break;
+                case 3:
+                    sort_type = 4;
+                    break;
+            }
+            SSort();
+        }
+
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            PrintAllDebts();
+        }
+
+        int sync_timer_error_count = 0;
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            var ser_base = Path.Combine(Program.Settings.Items["sync_path"].Value, "base.db");
+            if (SyncEnabled() && (sync_manager.Synchronization.Changes > 0 || !File.Exists(ser_base)))
+            {
+                Icon_Downloading();
+                synchronization.SyncSendAsync((res) =>
+                {
+                    Icon_Default();
+                    sync_manager.Synchronization.Changes = 0;
+                    if (res == null)
+                    {
+                        MessageBox.Show("Служба синхронизации работает неправильно, отключена или не была установлена. Исправить проблему " +
+                                        "можно перезапуском программы.");
+                        timer1.Stop();
+                        return;
+                    }
+                    if (!res.Contains("успешно"))
+                    {
+                        sync_timer_error_count += 1;
+                        MessageBox.Show(res);
+                        timer1.Stop(); // По желанию можно убрать
+                    }
+                });
+            }
         }
     }
 }

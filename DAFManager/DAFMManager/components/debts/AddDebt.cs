@@ -23,6 +23,7 @@ namespace DAFManager.components.debts
         public AddDebt(DataBaseManager dbm)
         {
             InitializeComponent();
+            if (checkBox1.Checked) priority.Enabled = false;
             priorities = dbm.GetPriorities();
             users = dbm.GetDebtors(priorities);
             debtorName.Items.AddRange(users.Select(t => t.Name).ToArray());
@@ -41,7 +42,7 @@ namespace DAFManager.components.debts
         private void Button1_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(debtorName.Text)) { MessageBox.Show("Введите имя задолжника!"); return; }
-            if (priority.SelectedItem == null) { MessageBox.Show("Выберите приоритет!"); return; }
+            if (priority.SelectedItem == null && !checkBox1.Checked) { MessageBox.Show("Выберите приоритет!"); return; }
 
             #region Regex Parser
             Regex rx1 = new Regex("(.+?)->([0-9]+)");
@@ -82,7 +83,7 @@ namespace DAFManager.components.debts
                 selDesc,
                 selAmount,
                 selUser,
-                priorities.First(t => t.Name == selPri),
+                !checkBox1.Checked ? priorities.First(t => t.Name == selPri) : selUser.Priority,
                 selDate,
                 ""
                 ));
@@ -96,6 +97,11 @@ namespace DAFManager.components.debts
             {
                 Button1_Click(sender, new EventArgs());
             }
+        }
+
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            priority.Enabled = !checkBox1.Checked;
         }
     }
 }

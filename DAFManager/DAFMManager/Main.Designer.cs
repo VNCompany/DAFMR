@@ -39,6 +39,7 @@
             this.программаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.проверитьОбновленияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.резервнаяКопияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.debtsCount = new System.Windows.Forms.Label();
@@ -67,7 +68,12 @@
             this.st = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.timerUpdate = new System.Windows.Forms.Timer(this.components);
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkFormState = new System.Windows.Forms.Timer(this.components);
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -149,6 +155,13 @@
             this.резервнаяКопияToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.резервнаяКопияToolStripMenuItem.Text = "Резервная копия";
             // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.importToolStripMenuItem.Text = "Импорт из общей папки";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportToolStripMenuItem_Click);
+            // 
             // справкаToolStripMenuItem
             // 
             this.справкаToolStripMenuItem.Name = "справкаToolStripMenuItem";
@@ -194,11 +207,13 @@
             // debtorsCount
             // 
             this.debtorsCount.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.debtorsCount.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.debtorsCount.Location = new System.Drawing.Point(173, 36);
             this.debtorsCount.Name = "debtorsCount";
             this.debtorsCount.Size = new System.Drawing.Size(58, 20);
             this.debtorsCount.TabIndex = 3;
             this.debtorsCount.Text = "99999";
+            this.debtorsCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // fullAmount
             // 
@@ -244,7 +259,7 @@
             this.view.FullRowSelect = true;
             this.view.Location = new System.Drawing.Point(0, 123);
             this.view.Name = "view";
-            this.view.Size = new System.Drawing.Size(930, 337);
+            this.view.Size = new System.Drawing.Size(930, 353);
             this.view.TabIndex = 2;
             this.view.UseCompatibleStateImageBehavior = false;
             this.view.View = System.Windows.Forms.View.Details;
@@ -403,12 +418,65 @@
             this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
-            // importToolStripMenuItem
+            // checkFormState
             // 
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.importToolStripMenuItem.Text = "Импорт из общей папки";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportToolStripMenuItem_Click);
+            this.checkFormState.Interval = 1000;
+            this.checkFormState.Tick += new System.EventHandler(this.CheckFormState_Tick);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 482);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(70, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Сортировка:";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Без сортировки",
+            "ID",
+            "Сумма",
+            "Дата создания"});
+            this.comboBox1.Location = new System.Drawing.Point(79, 479);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 12;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(206, 481);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(75, 17);
+            this.checkBox1.TabIndex = 13;
+            this.checkBox1.Text = "убывание";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(764, 481);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(154, 17);
+            this.checkBox2.TabIndex = 14;
+            this.checkBox2.Text = "Скрывать нулевые долги";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 30000;
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // Main
             // 
@@ -416,7 +484,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(930, 460);
+            this.ClientSize = new System.Drawing.Size(930, 503);
+            this.Controls.Add(this.checkBox2);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.st);
             this.Controls.Add(this.stb);
@@ -484,6 +556,12 @@
         private System.Windows.Forms.Timer timerUpdate;
         private System.Windows.Forms.ToolStripMenuItem экспортироватьДолгиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.Timer checkFormState;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

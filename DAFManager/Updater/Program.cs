@@ -101,10 +101,14 @@ namespace Updater
                 Directory.Delete(temp_path, true);
 
                 Thread.Sleep(2000);
+
+                if(File.Exists("DAFManager.exe"))
+                    System.Diagnostics.Process.Start("DAFManager.exe", "dafm_admin /show /non-auth");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("{0}: {1}", ex.GetType().FullName, ex.Message);
+                File.WriteAllText("fail.txt", $"{args[1]}:{args[2]}");
                 Console.ReadKey();
             }
         }

@@ -36,6 +36,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.sp_ob = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -47,13 +48,17 @@
             this.autoupdateCheck = new System.Windows.Forms.CheckBox();
             this.save = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.label4 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.auth_standart = new System.Windows.Forms.RadioButton();
+            this.auth_pass_only = new System.Windows.Forms.RadioButton();
+            this.auth_auto = new System.Windows.Forms.RadioButton();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.autoupdateInterval)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -89,6 +94,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Location = new System.Drawing.Point(4, 23);
@@ -136,6 +142,17 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Система";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label4.ForeColor = System.Drawing.Color.Gray;
+            this.label4.Location = new System.Drawing.Point(8, 270);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(419, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "*При изменении этих параметров потребуется перезапуск программы";
             // 
             // panel1
             // 
@@ -251,16 +268,52 @@
             this.save.UseVisualStyleBackColor = true;
             this.save.Click += new System.EventHandler(this.Save_Click);
             // 
-            // label4
+            // groupBox1
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.ForeColor = System.Drawing.Color.Gray;
-            this.label4.Location = new System.Drawing.Point(8, 270);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(419, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "*При изменении этих параметров потребуется перезапуск программы";
+            this.groupBox1.Controls.Add(this.auth_auto);
+            this.groupBox1.Controls.Add(this.auth_pass_only);
+            this.groupBox1.Controls.Add(this.auth_standart);
+            this.groupBox1.Location = new System.Drawing.Point(15, 88);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(200, 100);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Тип входа";
+            // 
+            // auth_standart
+            // 
+            this.auth_standart.AutoSize = true;
+            this.auth_standart.Checked = true;
+            this.auth_standart.Location = new System.Drawing.Point(6, 21);
+            this.auth_standart.Name = "auth_standart";
+            this.auth_standart.Size = new System.Drawing.Size(85, 18);
+            this.auth_standart.TabIndex = 3;
+            this.auth_standart.TabStop = true;
+            this.auth_standart.Text = "Обычный";
+            this.auth_standart.UseVisualStyleBackColor = true;
+            this.auth_standart.CheckedChanged += new System.EventHandler(this.Auth_standart_CheckedChanged);
+            // 
+            // auth_pass_only
+            // 
+            this.auth_pass_only.AutoSize = true;
+            this.auth_pass_only.Location = new System.Drawing.Point(6, 45);
+            this.auth_pass_only.Name = "auth_pass_only";
+            this.auth_pass_only.Size = new System.Drawing.Size(119, 18);
+            this.auth_pass_only.TabIndex = 4;
+            this.auth_pass_only.Text = "Только пароль";
+            this.auth_pass_only.UseVisualStyleBackColor = true;
+            this.auth_pass_only.CheckedChanged += new System.EventHandler(this.Auth_standart_CheckedChanged);
+            // 
+            // auth_auto
+            // 
+            this.auth_auto.AutoSize = true;
+            this.auth_auto.Location = new System.Drawing.Point(6, 69);
+            this.auth_auto.Name = "auth_auto";
+            this.auth_auto.Size = new System.Drawing.Size(165, 18);
+            this.auth_auto.TabIndex = 5;
+            this.auth_auto.Text = "Автоматический вход";
+            this.auth_auto.UseVisualStyleBackColor = true;
+            this.auth_auto.CheckedChanged += new System.EventHandler(this.Auth_standart_CheckedChanged);
             // 
             // Settings
             // 
@@ -287,6 +340,8 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.autoupdateInterval)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -312,5 +367,9 @@
         private System.Windows.Forms.TextBox sync_path;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton auth_auto;
+        private System.Windows.Forms.RadioButton auth_pass_only;
+        private System.Windows.Forms.RadioButton auth_standart;
     }
 }

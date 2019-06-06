@@ -79,6 +79,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(187, 22);
             this.textBox1.TabIndex = 0;
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBox1_KeyDown);
             // 
             // textBox2
             // 
@@ -89,6 +90,7 @@
             this.textBox2.Size = new System.Drawing.Size(187, 22);
             this.textBox2.TabIndex = 1;
             this.textBox2.UseSystemPasswordChar = true;
+            this.textBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBox1_KeyDown);
             // 
             // label3
             // 
@@ -131,6 +133,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Авторизация";
             this.TopMost = true;
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Auth_MouseDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

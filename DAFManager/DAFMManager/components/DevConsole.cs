@@ -124,7 +124,7 @@ namespace DAFManager
             m = rx.Match(cmd);
             if (m.Success)
             {
-                sync_manager.Synchronization.changes += Convert.ToInt32(m.Groups[1].Value);
+                sync_manager.Synchronization.Changes += Convert.ToInt32(m.Groups[1].Value);
             }
 
             if(cmd == "save list")

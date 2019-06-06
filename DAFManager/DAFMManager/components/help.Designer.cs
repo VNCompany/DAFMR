@@ -30,8 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(help));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.version = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -40,7 +41,6 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.version = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,16 +56,14 @@
             this.panel1.Size = new System.Drawing.Size(800, 87);
             this.panel1.TabIndex = 0;
             // 
-            // label1
+            // version
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Copperplate Gothic Bold", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.label1.Location = new System.Drawing.Point(12, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(298, 41);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "DAFManager";
+            this.version.AutoSize = true;
+            this.version.Location = new System.Drawing.Point(266, 31);
+            this.version.Name = "version";
+            this.version.Size = new System.Drawing.Size(34, 13);
+            this.version.TabIndex = 2;
+            this.version.Text = "v1.01";
             // 
             // label2
             // 
@@ -75,6 +73,17 @@
             this.label2.Size = new System.Drawing.Size(75, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "©VNCompany";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Book Antiqua", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.label1.Location = new System.Drawing.Point(12, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(248, 46);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "DAFManager";
             // 
             // label3
             // 
@@ -158,15 +167,6 @@
             this.label8.Size = new System.Drawing.Size(772, 145);
             this.label8.TabIndex = 8;
             this.label8.Text = resources.GetString("label8.Text");
-            // 
-            // version
-            // 
-            this.version.AutoSize = true;
-            this.version.Location = new System.Drawing.Point(305, 31);
-            this.version.Name = "version";
-            this.version.Size = new System.Drawing.Size(34, 13);
-            this.version.TabIndex = 2;
-            this.version.Text = "v1.01";
             // 
             // help
             // 

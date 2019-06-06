@@ -1,120 +1,135 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
+using System.ServiceProcess;
+using System.Linq;
 using System.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace sync_manager
 {
     public class Synchronization
     {
-        public enum WorkState { Working, Paused, Stopped }
+        public int SleepTime = 10000;
+        public static int Changes = 0;
 
-        Thread th;
-        WorkState state;
+        public enum ServiceState { NotInstalled, Stopped, Working }
 
-        int sleep_time = 10000;
+        IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8080);
 
-        public string LocalBase { get; set; }
-        public string ServerBase { get; set; }
-
-        public static int changes = 0;
-
-        public WorkState State
+        public async void SyncSendAsync(Action<string> callback)
         {
-            get
+            string result = await Task.Run(() =>
             {
-                return state;
-            }
+                return SendMessage("!sync");
+            });
+
+            callback(result);
         }
 
-        public Synchronization()
+        public async void SyncGetAsync(Action<string> callback)
         {
-            state = WorkState.Stopped;
-            th = new Thread(SyncMethod);
+            string result = await Task.Run(() =>
+            {
+                return SendMessage("!sync_get");
+            });
+
+            callback(result);
         }
 
-        public Synchronization(string local, string sync)
+        public static ServiceState GetDAFMSState()
         {
-            LocalBase = local;
-            ServerBase = sync;
-            state = WorkState.Stopped;
-            th = new Thread(SyncMethod);
-        }
-
-        public void Start()
-        {
-            state = WorkState.Working;
-            if(th.ThreadState == ThreadState.Unstarted || th.ThreadState == ThreadState.Stopped)
+            if(ServiceController.GetServices().Any(t => t.ServiceName == "DAFMS"))
             {
-                th.Start();
-            }
-            else
-            {
-                th.Abort();
-                Thread.Sleep(200);
-                th.Start();
-            }
-        }
-
-        public void Pause()
-        {
-            if(th.ThreadState == ThreadState.Running)
-            {
-                state = WorkState.Paused;
-            }
-        }
-
-        public void Stop(bool except = false)
-        {
-            if (except)
-            {
-                th.Abort();
-            }
-            else
-            {
-                state = WorkState.Stopped;
-            }
-        }
-
-        private void SyncMethod()
-        {
-            FileInfo cur_base = new FileInfo(LocalBase);
-            FileInfo ser_base = new FileInfo(ServerBase);
-
-            while (true)
-            {
-                if (State == WorkState.Stopped) break;
-                if (State == WorkState.Paused)
+                ServiceController sc = new ServiceController("DAFMS");
+                if (sc.Status == ServiceControllerStatus.StartPending) Thread.Sleep(4000);
+                if (sc.Status == ServiceControllerStatus.Running)
                 {
-                    Thread.Sleep(1000);
-                    continue;
+                    return ServiceState.Working;
                 }
+                else
+                    return ServiceState.Stopped;
+            }
+            else
+            {
+                return ServiceState.NotInstalled;
+            }
+        }
 
-                if (File.Exists(ser_base.FullName))
+        public void DAFMSStart()
+        {
+            if(GetDAFMSState() == ServiceState.Stopped)
+            {
+                new ServiceController("DAFMS").Start();
+                Thread.Sleep(5000);
+            }
+        }
+
+        public void DAFMSStop()
+        {
+            if(GetDAFMSState() == ServiceState.Working)
+            {
+                new ServiceController("DAFMS").Stop();
+                Thread.Sleep(5000);
+            }
+        }
+
+        public string DAFMSInstall()
+        {
+            try
+            {
+                if(GetDAFMSState() == ServiceState.NotInstalled)
                 {
-                    if (changes > 0)
-                    {
-                        if (File.Exists(Path.Combine(ser_base.DirectoryName, "base_old.db")))
-                            File.Delete(Path.Combine(ser_base.DirectoryName, "base_old.db"));
-                        ser_base.MoveTo(Path.Combine(ser_base.DirectoryName, "base_old.db"));
-                        cur_base.CopyTo(Path.Combine(ser_base.DirectoryName, "base.db"));
-                        changes = 0;
-                    }
+                    string windowsFolder = @"C:\Windows\Microsoft.NET";
+                    string frame = "Framework" + (Environment.Is64BitOperatingSystem ? "64" : "");
+                    string ver = "v4.0.30319";
+                    string installUtil = "InstallUtil.exe";
+
+                    string Util = Path.Combine(windowsFolder, frame, ver, installUtil);
+                    if (!File.Exists(Util)) return "На компьютере не установлена версия Framework 4.0!";
+
+                    Process.Start(Util, Path.Combine(Environment.CurrentDirectory, "DAFMS.exe"));
+
+                    Thread.Sleep(7000);
+
+                    return "Success";
                 }
                 else
                 {
-                    cur_base.CopyTo(Path.Combine(ser_base.DirectoryName, "base.db"));
+                    return "AlreadyInstalled";
                 }
-                Thread.Sleep(sleep_time);
+            }catch(Exception ex)
+            {
+                return ex.Message;
             }
         }
 
-        public void GetFile()
+        private string SendMessage(string msg)
         {
-            if(File.Exists(ServerBase))
-                System.Diagnostics.Process.Start("SyncUploader.exe", ServerBase);
+            if (GetDAFMSState() != ServiceState.Working) return null;
+
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            socket.Connect(endPoint);
+            socket.Send(Encoding.UTF8.GetBytes(msg));
+
+            byte[] buffer = new byte[256];
+            int size = 0;
+            StringBuilder answer = new StringBuilder();
+
+            do
+            {
+                size = socket.Receive(buffer);
+                answer.Append(Encoding.UTF8.GetString(buffer, 0, size));
+            } while (socket.Available > 0);
+
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+
+            return answer.ToString();
         }
     }
 }

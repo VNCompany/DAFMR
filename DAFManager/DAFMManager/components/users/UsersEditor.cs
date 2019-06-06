@@ -30,6 +30,9 @@ namespace DAFManager.components.users
 
         public void PrintAllUsers()
         {
+
+            if (!dbm.isBusy) { Close(); return; }
+
             listView1.Items.Clear();
             foreach (User user in dbm.GetDebtors(dbm.GetPriorities()))
             {
@@ -40,6 +43,9 @@ namespace DAFManager.components.users
 
         private void ДобавитьНовогоToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
+            if (!dbm.isBusy) { Close(); return; }
+
             var f = dbm.GetPriorities();
             UserAdd ua = new UserAdd(dbm, (from t in dbm.GetDebtors(f) select t.Name).ToArray());
             ua.Construct();
@@ -47,13 +53,16 @@ namespace DAFManager.components.users
             {
                 dbm.AddUser(new User(0, ua.UserName, ua.SelectedPriority, ""));
                 PrintAllUsers();
-                sync_manager.Synchronization.changes += 1;
+                sync_manager.Synchronization.Changes += 1;
             }
         }
 
         private void УдалитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(listView1.SelectedItems.Count > 0)
+
+            if (!dbm.isBusy) { Close(); return; }
+
+            if (listView1.SelectedItems.Count > 0)
             {
                 foreach (ListViewItem lwi in listView1.SelectedItems)
                 {
@@ -70,7 +79,7 @@ namespace DAFManager.components.users
                     main.UpdateCounters();
                     main.PrintAllDebts();
                     PrintAllUsers();
-                    sync_manager.Synchronization.changes += 1;
+                    sync_manager.Synchronization.Changes += 1;
                 }
             }
             else
@@ -86,7 +95,10 @@ namespace DAFManager.components.users
 
         private void ИзменитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(listView1.SelectedItems.Count == 1)
+
+            if (!dbm.isBusy) { Close(); return; }
+
+            if (listView1.SelectedItems.Count == 1)
             {
                 ListViewItem selItem = listView1.SelectedItems[0];
                 User[] users = dbm.GetDebtors(dbm.GetPriorities());
@@ -106,7 +118,7 @@ namespace DAFManager.components.users
                         uc.Values.Add(new DBKV("priority", ua.SelectedPriority.Name.ToString()));
                         dbm.EditUser(uc);
                         PrintAllUsers();
-                        sync_manager.Synchronization.changes += 1;
+                        sync_manager.Synchronization.Changes += 1;
                     }
                 }
             }
@@ -114,7 +126,10 @@ namespace DAFManager.components.users
 
         private void ListView1_DoubleClick(object sender, EventArgs e)
         {
-            if(listView1.SelectedItems.Count == 1)
+
+            if (!dbm.isBusy) { Close(); return; }
+
+            if (listView1.SelectedItems.Count == 1)
             {
                 if (debts.Count != main.GetElementsCount())
                     main.CloseSearch();

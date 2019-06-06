@@ -62,7 +62,7 @@ namespace DAFManager
                 Print();
                 dbm.AddPriority(pr);
                 UpdatePriorities = true;
-                sync_manager.Synchronization.changes += 1;
+                sync_manager.Synchronization.Changes += 1;
             }
             pa.Dispose();
             pa = null;
@@ -79,7 +79,7 @@ namespace DAFManager
                     pri.RemoveAll(t => t.Name == id);
                     Print();
                     UpdatePriorities = true;
-                    sync_manager.Synchronization.changes += 1;
+                    sync_manager.Synchronization.Changes += 1;
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace DAFManager
                     UpdatePriorities = true;
                 }
                 dbm.EditPriority(ic);
-                sync_manager.Synchronization.changes += 1;
+                sync_manager.Synchronization.Changes += 1;
                 pa.Dispose();
                 pa = null;
             }
